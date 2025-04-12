@@ -1,12 +1,12 @@
 "use client"
-
-import { useState } from "react"
 import { useResearch } from "../context/ResearchContext"
-import { Sun, Moon, Menu, Search, Plus } from "lucide-react"
+import { Menu, Plus, BookmarkIcon } from "lucide-react"
+import EnhancedSearch from "./EnhancedSearch"
+import ThemeToggle from "./ThemeToggle"
+import ImportExport from "./ImportExport"
 
 const Navbar = ({ toggleSidebar, toggleModal, isDarkMode, toggleDarkMode }) => {
-  const { searchTerm, setSearchTerm } = useResearch()
-  const [isSearchFocused, setIsSearchFocused] = useState(false)
+  const { items, importItems, showFavoritesOnly, setShowFavoritesOnly } = useResearch()
 
   return (
     <nav className="sticky top-0 z-10 bg-gradient-to-r from-black via-gray-900 to-black border-b border-gold/30 px-4 py-3 flex items-center justify-between">
@@ -22,31 +22,25 @@ const Navbar = ({ toggleSidebar, toggleModal, isDarkMode, toggleDarkMode }) => {
         <h1 className="text-xl font-bold text-gold hidden md:block">Research Archive</h1>
       </div>
 
-      <div
-        className={`relative mx-4 flex-1 max-w-xl transition-all duration-300 ${isSearchFocused ? "scale-105" : ""}`}
-      >
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search by title or tag..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onFocus={() => setIsSearchFocused(true)}
-            onBlur={() => setIsSearchFocused(false)}
-            className="w-full py-2 pl-10 pr-4 rounded-full bg-gray-800 border border-gray-700 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold transition-all"
-          />
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-        </div>
-      </div>
+      <EnhancedSearch />
 
-      <div className="flex items-center">
+      <div className="flex items-center space-x-2">
         <button
-          onClick={toggleDarkMode}
-          className="p-2 rounded-full hover:bg-gray-800 transition-colors mr-2"
-          aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+          onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+          className={`p-2 rounded-full transition-colors ${
+            showFavoritesOnly ? "bg-gold/20 text-gold" : "hover:bg-gray-800 text-gray-400"
+          }`}
+          aria-label={showFavoritesOnly ? "Show all items" : "Show favorites only"}
+          title={showFavoritesOnly ? "Show all items" : "Show favorites only"}
         >
-          {isDarkMode ? <Sun className="h-5 w-5 text-gold" /> : <Moon className="h-5 w-5 text-gold" />}
+          <BookmarkIcon className="h-5 w-5" />
         </button>
+
+        <ThemeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+
+        <div className="hidden md:block">
+          <ImportExport items={items} importItems={importItems} />
+        </div>
 
         <button
           onClick={toggleModal}
@@ -61,4 +55,3 @@ const Navbar = ({ toggleSidebar, toggleModal, isDarkMode, toggleDarkMode }) => {
 }
 
 export default Navbar
-
