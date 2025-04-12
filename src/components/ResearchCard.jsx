@@ -13,11 +13,12 @@ import {
   MoreVertical,
   Eye,
   BookmarkIcon,
+  Star,
 } from "lucide-react"
 import EditModal from "./EditModal"
 
-const ResearchCard = ({ item, index }) => {
-  const { deleteItem, toggleFavorite, incrementViewCount } = useResearch()
+const ResearchCard = ({ item, index, isSelecting, isSelected, onSelect }) => {
+  const { deleteItem, toggleFavorite, toggleFeatured, incrementViewCount } = useResearch()
   const [showOptions, setShowOptions] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -136,16 +137,39 @@ const ResearchCard = ({ item, index }) => {
   return (
     <>
       <div
-        className={`bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow-lg card-hover animate-fade-in relative`}
+        className={`bg-gray-900 border ${
+          isSelected ? "border-gold" : "border-gray-800"
+        } rounded-lg overflow-hidden shadow-lg card-hover animate-fade-in relative`}
         style={{ animationDelay: `${index * 0.05}s` }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
+        {/* Selection checkbox */}
+        {isSelecting && (
+          <div className="absolute top-2 left-2 z-20">
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={() => onSelect(item.id)}
+              className="h-5 w-5 accent-gold"
+            />
+          </div>
+        )}
+
         {/* Favorite badge */}
         {item.favorite && (
-          <div className="absolute top-2 left-2 z-10">
+          <div className="absolute top-2 right-2 z-10">
             <div className="bg-gold text-black rounded-full p-1">
               <BookmarkIcon className="h-4 w-4" />
+            </div>
+          </div>
+        )}
+
+        {/* Featured badge */}
+        {item.featured && (
+          <div className="absolute top-2 right-10 z-10">
+            <div className="bg-gold/80 text-black rounded-full p-1">
+              <Star className="h-4 w-4" />
             </div>
           </div>
         )}
@@ -174,6 +198,13 @@ const ResearchCard = ({ item, index }) => {
                   >
                     <BookmarkIcon className={`h-4 w-4 mr-2 ${item.favorite ? "text-gold" : ""}`} />
                     {item.favorite ? "Remove Favorite" : "Add Favorite"}
+                  </button>
+                  <button
+                    onClick={() => toggleFeatured(item.id)}
+                    className="flex items-center w-full px-3 py-2 text-sm text-left hover:bg-gray-700"
+                  >
+                    <Star className={`h-4 w-4 mr-2 ${item.featured ? "text-gold" : ""}`} />
+                    {item.featured ? "Remove Featured" : "Add Featured"}
                   </button>
                   <button
                     onClick={() => {
@@ -238,7 +269,7 @@ const ResearchCard = ({ item, index }) => {
         </div>
 
         {/* Hover overlay with quick actions */}
-        {isHovered && (
+        {isHovered && !isSelecting && (
           <div className="absolute top-2 right-2 flex space-x-1 bg-gray-900/80 backdrop-blur-sm rounded-md p-1 animate-fade-in">
             <button
               onClick={() => toggleFavorite(item.id)}
@@ -246,6 +277,13 @@ const ResearchCard = ({ item, index }) => {
               title={item.favorite ? "Remove from favorites" : "Add to favorites"}
             >
               <BookmarkIcon className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => toggleFeatured(item.id)}
+              className={`p-1 rounded-full ${item.featured ? "text-gold" : "text-gray-400 hover:text-gold"}`}
+              title={item.featured ? "Remove from featured" : "Add to featured"}
+            >
+              <Star className="h-4 w-4" />
             </button>
             <button
               onClick={() => setShowEditModal(true)}

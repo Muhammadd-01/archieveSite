@@ -1,15 +1,23 @@
 "use client"
 import { useResearch } from "../context/ResearchContext"
-import { Menu, Plus, BookmarkIcon } from "lucide-react"
+import { Menu, Plus, BookmarkIcon, LayoutGrid } from "lucide-react"
 import EnhancedSearch from "./EnhancedSearch"
 import ThemeToggle from "./ThemeToggle"
 import ImportExport from "./ImportExport"
 
-const Navbar = ({ toggleSidebar, toggleModal, isDarkMode, toggleDarkMode }) => {
-  const { items, importItems, showFavoritesOnly, setShowFavoritesOnly } = useResearch()
+const Navbar = ({
+  toggleSidebar,
+  toggleModal,
+  toggleImportExport,
+  isDarkMode,
+  toggleDarkMode,
+  toggleFeatured,
+  showFeatured,
+}) => {
+  const { showFavoritesOnly, setShowFavoritesOnly } = useResearch()
 
   return (
-    <nav className="sticky top-0 z-10 bg-gradient-to-r from-black via-gray-900 to-black border-b border-gold/30 px-4 py-3 flex items-center justify-between">
+    <nav className="sticky top-0 z-20 bg-gradient-to-r from-black via-gray-900 to-black border-b border-gold/30 px-4 py-3 flex items-center justify-between">
       <div className="flex items-center">
         <button
           onClick={toggleSidebar}
@@ -19,7 +27,7 @@ const Navbar = ({ toggleSidebar, toggleModal, isDarkMode, toggleDarkMode }) => {
           <Menu className="h-5 w-5 text-gold" />
         </button>
 
-        <h1 className="text-xl font-bold text-gold hidden md:block">Research Archive</h1>
+        <h1 className="text-xl font-bold text-gold hidden md:block font-display">Research Archive</h1>
       </div>
 
       <EnhancedSearch />
@@ -36,10 +44,21 @@ const Navbar = ({ toggleSidebar, toggleModal, isDarkMode, toggleDarkMode }) => {
           <BookmarkIcon className="h-5 w-5" />
         </button>
 
+        <button
+          onClick={toggleFeatured}
+          className={`p-2 rounded-full transition-colors ${
+            showFeatured ? "bg-gold/20 text-gold" : "hover:bg-gray-800 text-gray-400"
+          }`}
+          aria-label={showFeatured ? "Hide featured carousel" : "Show featured carousel"}
+          title={showFeatured ? "Hide featured carousel" : "Show featured carousel"}
+        >
+          <LayoutGrid className="h-5 w-5" />
+        </button>
+
         <ThemeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
 
         <div className="hidden md:block">
-          <ImportExport items={items} importItems={importItems} />
+          <ImportExport toggleImportExport={toggleImportExport} />
         </div>
 
         <button

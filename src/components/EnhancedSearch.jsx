@@ -121,7 +121,7 @@ const EnhancedSearch = () => {
       {showSuggestions && (
         <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
           {/* Search results */}
-          {searchTerm.trim() && searchResults.length > 0 && (
+          {searchTerm.trim() && searchResults && searchResults.length > 0 && (
             <div className="p-2">
               <div className="flex justify-between items-center px-2 py-1 text-sm text-gray-500 dark:text-gray-400">
                 <span>Search Results</span>
@@ -181,7 +181,7 @@ const EnhancedSearch = () => {
           )}
 
           {/* No results */}
-          {searchTerm.trim() && searchResults.length === 0 && (
+          {searchTerm.trim() && (!searchResults || searchResults.length === 0) && (
             <div className="p-4 text-center text-gray-500 dark:text-gray-400">No results found for "{searchTerm}"</div>
           )}
         </div>

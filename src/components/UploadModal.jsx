@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useResearch } from "../context/ResearchContext"
-import { X, FileText, Video, Film, ImageIcon } from "lucide-react"
+import { X, FileText, Video, Film, ImageIcon, Star, BookmarkIcon } from "lucide-react"
 
 const UploadModal = ({ closeModal }) => {
   const { addItem, categories } = useResearch()
@@ -15,6 +15,8 @@ const UploadModal = ({ closeModal }) => {
     description: "",
     url: "",
     thumbnail: "",
+    favorite: false,
+    featured: false,
   })
 
   const [errors, setErrors] = useState({})
@@ -27,10 +29,10 @@ const UploadModal = ({ closeModal }) => {
   ]
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value, type, checked } = e.target
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     })
 
     // Clear error for this field
@@ -231,6 +233,37 @@ const UploadModal = ({ closeModal }) => {
               />
             </div>
           )}
+
+          <div className="mb-4 flex space-x-4">
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="favorite"
+                name="favorite"
+                checked={formData.favorite}
+                onChange={handleChange}
+                className="mr-2 h-4 w-4 accent-gold"
+              />
+              <label htmlFor="favorite" className="flex items-center text-gray-300 cursor-pointer">
+                <BookmarkIcon className="h-4 w-4 mr-1 text-gold" />
+                Add to Favorites
+              </label>
+            </div>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="featured"
+                name="featured"
+                checked={formData.featured}
+                onChange={handleChange}
+                className="mr-2 h-4 w-4 accent-gold"
+              />
+              <label htmlFor="featured" className="flex items-center text-gray-300 cursor-pointer">
+                <Star className="h-4 w-4 mr-1 text-gold" />
+                Add to Featured
+              </label>
+            </div>
+          </div>
 
           <div className="flex justify-end gap-3 mt-6">
             <button
